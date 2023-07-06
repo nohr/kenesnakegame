@@ -16,6 +16,11 @@
   }
 }
 
+html,
+body {
+  overscroll-behavior-y: none;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
