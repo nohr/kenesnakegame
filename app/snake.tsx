@@ -1,13 +1,22 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { GameOver, Paused, PlayerName, Score, SnakeSegment, Start } from "./ui";
+import {
+  GameOver,
+  Paused,
+  PlayerName,
+  Score,
+  SnakeSegment,
+  Start,
+  Time,
+} from "./ui";
 import {
   useArrowKeys,
   useTouchControls,
   state,
   player,
   useLocalStorage,
+  newGame,
 } from "./utils";
 import { useSnapshot } from "valtio";
 
@@ -18,10 +27,8 @@ const Snake: () => JSX.Element = () => {
 
   useArrowKeys((key: string) => {
     if (key === " " && gameOver) {
-      state.gameOver = false;
-      state.snake = [{ x: 0, y: 0 }];
-      state.score = 0;
-    } else if (key === " " && started && !gameOver) {
+      newGame();
+    } else if ((key === " " || key === "Escape") && started && !gameOver) {
       state.paused = !paused;
     } else if (!paused && started) {
       switch (key) {
@@ -107,6 +114,7 @@ const Snake: () => JSX.Element = () => {
       ))}
       {gameOver && <GameOver />}
       <PlayerName />
+      <Time />
       <Score score={score} highScore={highScore} />
       {!started && <Start />}
       {paused && started && <Paused />}

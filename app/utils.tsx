@@ -6,16 +6,15 @@ import { proxy } from "valtio";
 // player state
 export const player = proxy({
   name: "",
-  games: [],
+  games: [] as Game[],
   highScore: 0,
-  date: new Date(),
 });
 
-// game state
 export const state = proxy({
   player: null,
   snake: [{ x: 0, y: 0 }],
   score: 0,
+  time: 0,
   started: false,
   paused: false,
   direction: "right" as DirectionType,
@@ -27,7 +26,14 @@ const useArrowKeys = (callback: (key: string) => void) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
-        ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)
+        [
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+          " ",
+          "Escape",
+        ].includes(e.key)
       ) {
         e.preventDefault();
         callback(e.key);
@@ -101,4 +107,39 @@ const useLocalStorage = () => {
   return { get, set };
 };
 
-export { useArrowKeys, useTouchControls, useLocalStorage };
+const useTimer = (started: boolean, paused: boolean, gameOver: boolean) => {
+  const [time, setTime] = useState<number>(0);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (started && !paused) {
+      timer = setInterval(() => {
+        setTime((time) => time + 1);
+      }, 1000);
+    }
+
+    return () => clearInterval(timer);
+  }, [started, paused, gameOver]);
+
+  useEffect(() => {
+    if (!gameOver) {
+      state.time = time;
+    } else {
+      setTime(0);
+    }
+  }, [gameOver, time]);
+
+  return time;
+};
+
+function newGame() {
+  state.gameOver = false;
+  state.snake = [{ x: 0, y: 0 }];
+  state.score = 0;
+  state.time = 0;
+  state.started = true;
+  state.direction = "right";
+}
+
+export { useArrowKeys, useTouchControls, useLocalStorage, useTimer, newGame };
