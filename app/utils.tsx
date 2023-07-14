@@ -47,7 +47,6 @@ const useArrowKeys = (callback: (key: string) => void) => {
 };
 
 const useTouchControls = (callback: (direction: DirectionType) => void) => {
-  // TODO:  long press to pause with visual feedback
   useEffect(() => {
     let startX: number | undefined;
     let startY: number | undefined;

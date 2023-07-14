@@ -97,6 +97,32 @@ const Snake: () => JSX.Element = () => {
       }
     };
 
+    // food
+    const head = snake[snake.length - 1];
+    const food = document.getElementById("food");
+
+    if (food) {
+      const foodX = parseInt(food.style.left);
+      const foodY = parseInt(food.style.top);
+
+      if (head.x === foodX && head.y === foodY) {
+        state.score += 1;
+        state.snake.unshift({ x: foodX, y: foodY });
+        food.style.left = `${Math.floor(Math.random() * 100) * 10}px`;
+        food.style.top = `${Math.floor(Math.random() * 100) * 10}px`;
+      }
+    }
+
+    // drop food
+    const dropFood = () => {
+      const food = document.getElementById("food");
+
+      if (food) {
+        food.style.left = `${Math.floor(Math.random() * 100) * 10}px`;
+        food.style.top = `${Math.floor(Math.random() * 100) * 10}px`;
+      }
+    };
+
     const interval = setInterval(() => {
       moveSnake();
       checkCollision();
@@ -108,7 +134,7 @@ const Snake: () => JSX.Element = () => {
   const { get, set } = useLocalStorage();
 
   return (
-    <div className="w-full h-screen bg-gray-900">
+    <div className="w-full h-full bg-blue-900">
       {snake.map((segment, i) => (
         <SnakeSegment key={i} x={segment.x} y={segment.y} />
       ))}

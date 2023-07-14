@@ -6,6 +6,14 @@ const SnakeSegment: ({ x, y }: { x: number; y: number }) => JSX.Element = ({
   y,
 }) => <div className="absolute w-2 h-2 bg-white" style={{ left: x, top: y }} />;
 
+// food
+const Food: ({ x, y }: { x: number; y: number }) => JSX.Element = ({
+  x,
+  y,
+}) => (
+  <div className="absolute w-2 h-2 bg-red-500" style={{ left: x, top: y }} />
+);
+
 const GameOver: () => JSX.Element = () => {
   const { highScore, games } = player;
   const { set } = useLocalStorage();
