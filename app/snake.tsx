@@ -10,15 +10,9 @@ import {
   Start,
   Time,
 } from "./ui";
-import {
-  useArrowKeys,
-  useTouchControls,
-  state,
-  player,
-  useLocalStorage,
-  newGame,
-} from "./utils";
+import { useArrowKeys, state, player, useLocalStorage, newGame } from "./utils";
 import { useSnapshot } from "valtio";
+import Trackpad from "./trackpad";
 
 const Snake: () => JSX.Element = () => {
   const { snake, score, paused, started, direction, gameOver } =
@@ -47,8 +41,6 @@ const Snake: () => JSX.Element = () => {
       }
     }
   });
-
-  useTouchControls((direction: DirectionType) => (state.direction = direction));
 
   useEffect(() => {
     if (paused || !started || gameOver) {
@@ -134,16 +126,19 @@ const Snake: () => JSX.Element = () => {
   const { get, set } = useLocalStorage();
 
   return (
-    <div className="w-full h-full bg-blue-900">
-      {snake.map((segment, i) => (
-        <SnakeSegment key={i} x={segment.x} y={segment.y} />
-      ))}
+    <div className="w-full h-screen flex flex-col">
       {gameOver && <GameOver />}
       <PlayerName />
       <Time />
       <Score score={score} highScore={highScore} />
       {!started && <Start />}
       {paused && started && <Paused />}
+      <div className="h-3/4">
+        {snake.map((segment, i) => (
+          <SnakeSegment key={i} x={segment.x} y={segment.y} />
+        ))}
+      </div>
+      <Trackpad />
     </div>
   );
 };

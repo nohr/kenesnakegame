@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { proxy } from "valtio";
 
 // player state
@@ -46,7 +46,10 @@ const useArrowKeys = (callback: (key: string) => void) => {
   }, [callback]);
 };
 
-const useTouchControls = (callback: (direction: DirectionType) => void) => {
+const useTouchControls = (
+  callback: (direction: DirectionType) => void,
+  ref: RefObject<HTMLDivElement>
+) => {
   useEffect(() => {
     let startX: number | undefined;
     let startY: number | undefined;
@@ -76,14 +79,20 @@ const useTouchControls = (callback: (direction: DirectionType) => void) => {
       startY = undefined;
     };
 
-    document.addEventListener("touchstart", handleTouchStart);
-    document.addEventListener("touchmove", handleTouchMove);
+    if (!ref.current) {
+      return;
+    }
+    ref.current.addEventListener("touchstart", handleTouchStart);
+    ref.current.addEventListener("touchmove", handleTouchMove);
 
     return () => {
-      document.removeEventListener("touchstart", handleTouchStart);
-      document.removeEventListener("touchmove", handleTouchMove);
+      if (!ref.current) {
+        return;
+      }
+      ref.current.removeEventListener("touchstart", handleTouchStart);
+      ref.current.removeEventListener("touchmove", handleTouchMove);
     };
-  }, [callback]);
+  }, [callback, ref]);
 };
 
 const useLocalStorage = () => {
