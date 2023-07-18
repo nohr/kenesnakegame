@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
+import Header from "./header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +16,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className=" text-white bg-zinc-900">{children}</body>
+      <body className="select-none text-white bg-zinc-900 w-[100svw] h-[100svh] overflow-hidden">
+        <Header />
+        <main className="w-full h-screen flex flex-col"> {children}</main>
+      </body>
     </html>
   );
 }

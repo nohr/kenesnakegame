@@ -19,6 +19,7 @@ export const state = proxy({
   paused: false,
   direction: "right" as DirectionType,
   gameOver: false,
+  trackpadHeight: 0,
 });
 
 // hooks

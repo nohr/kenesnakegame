@@ -1,23 +1,14 @@
 "use client";
 
-import React, { useEffect } from "react";
-import {
-  GameOver,
-  Paused,
-  PlayerName,
-  Score,
-  SnakeSegment,
-  Start,
-  Time,
-} from "./ui";
-import { useArrowKeys, state, player, useLocalStorage, newGame } from "./utils";
+import React, { useEffect, useRef } from "react";
+import { GameOver, Paused, SnakeSegment, Start } from "./ui";
+import { useArrowKeys, state, player, newGame } from "./utils";
 import { useSnapshot } from "valtio";
 import Trackpad from "./trackpad";
 
 const Snake: () => JSX.Element = () => {
-  const { snake, score, paused, started, direction, gameOver } =
-    useSnapshot(state);
-  const { highScore } = useSnapshot(player);
+  const { snake, paused, started, direction, gameOver } = useSnapshot(state);
+  const mapRef = useRef<HTMLDivElement>(null);
 
   useArrowKeys((key: string) => {
     if (key === " " && gameOver) {
@@ -43,7 +34,13 @@ const Snake: () => JSX.Element = () => {
   });
 
   useEffect(() => {
-    if (paused || !started || gameOver) {
+    if (
+      paused ||
+      !started ||
+      gameOver ||
+      player.name === "" ||
+      !mapRef.current
+    ) {
       return;
     }
 
@@ -73,11 +70,13 @@ const Snake: () => JSX.Element = () => {
     const checkCollision = () => {
       const head = snake[snake.length - 1];
 
+      if (!mapRef.current) return;
+
       if (
         head.x < 0 ||
-        head.x >= window.innerWidth ||
+        head.x >= mapRef.current.clientWidth ||
         head.y < 0 ||
-        head.y >= window.innerHeight
+        head.y >= mapRef.current.clientHeight
       ) {
         state.gameOver = true;
       }
@@ -123,23 +122,20 @@ const Snake: () => JSX.Element = () => {
     return () => clearInterval(interval);
   }, [snake, direction, paused, started, gameOver]);
 
-  const { get, set } = useLocalStorage();
+  // const { get, set } = useLocalStorage();
 
   return (
-    <div className="w-full h-screen flex flex-col">
+    <>
       {gameOver && <GameOver />}
-      <PlayerName />
-      <Time />
-      <Score score={score} highScore={highScore} />
       {!started && <Start />}
       {paused && started && <Paused />}
-      <div className="h-3/4">
+      <div className="h-3/4" ref={mapRef}>
         {snake.map((segment, i) => (
           <SnakeSegment key={i} x={segment.x} y={segment.y} />
         ))}
       </div>
-      <Trackpad />
-    </div>
+      {started && <Trackpad />}
+    </>
   );
 };
 

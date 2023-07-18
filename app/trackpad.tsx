@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { use, useEffect, useRef } from "react";
 import { state, useTouchControls } from "./utils";
 
 export default function Trackpad() {
@@ -7,6 +7,12 @@ export default function Trackpad() {
     (direction: DirectionType) => (state.direction = direction),
     trackpadRef
   );
+
+  useEffect(() => {
+    if (trackpadRef.current) {
+      state.trackpadHeight = trackpadRef.current.clientHeight;
+    }
+  }, [trackpadRef]);
   return (
     <div
       ref={trackpadRef}

@@ -53,26 +53,8 @@ const GameOver: () => JSX.Element = () => {
   );
 };
 
-const Score: ({
-  score,
-  highScore,
-}: {
-  score: number;
-  highScore: number;
-}) => JSX.Element = ({ score, highScore }) => (
-  <div className="text-white absolute top-0 right-0 m-4">
-    {` Score: ${score}${player.name ? ` | High Score: ${highScore}` : ""}`}
-  </div>
-);
-
-const PlayerName: () => JSX.Element = () => (
-  <>
-    {player.name && (
-      <div className="text-white absolute top-0 left-0 m-4">
-        Player: {player.name}
-      </div>
-    )}
-  </>
+const Paused: () => JSX.Element = () => (
+  <div className="text-white text-2xl z-50 font-bold">Paused</div>
 );
 
 const Time = () => {
@@ -81,20 +63,14 @@ const Time = () => {
 
   return (
     <>
-      {started && !gameOver && (
+      {/* {started && !gameOver && (
         <div className="text-white absolute top-4 left-0 m-4">
-          {` Time: ${time}`}
+          {`${time}`}
         </div>
-      )}
+      )} */}
     </>
   );
 };
-
-const Paused: () => JSX.Element = () => (
-  <div className="text-white text-2xl z-50 font-bold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-    Paused
-  </div>
-);
 
 const Start: () => JSX.Element = () => {
   const [name, setName] = useState<string>("");
@@ -115,7 +91,9 @@ const Start: () => JSX.Element = () => {
           onSubmit={(e) => {
             e.preventDefault();
             console.log(get(name));
-
+            if (name.length === 0) {
+              return;
+            }
             if (get(name).length > 0) {
               const current_player = JSON.parse(get(name));
               console.log("player exists, logging in...", current_player);
@@ -133,12 +111,12 @@ const Start: () => JSX.Element = () => {
         >
           <input
             ref={input}
-            className="bg-transparent border-b border-white text-center  text-2xl outline-none"
+            className="bg-transparent border-b border-white text-center rounded-none text-2xl outline-none"
             onChange={(e) => setName(e.target.value)}
-            placeholder=" Enter your name to start"
+            placeholder=" Enter your name"
           />
           <button
-            className="bg-transparent border-b border-white text-center text-2xl outline-none"
+            className="bg-transparent text-center text-2xl outline-none"
             type="submit"
           >
             Start
@@ -149,4 +127,4 @@ const Start: () => JSX.Element = () => {
   );
 };
 
-export { SnakeSegment, GameOver, Score, Paused, Start, PlayerName, Time };
+export { SnakeSegment, GameOver, Paused, Start, Time };
