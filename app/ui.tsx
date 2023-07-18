@@ -41,7 +41,9 @@ const GameOver: () => JSX.Element = () => {
   return (
     <div className="text-white text-2xl font-bold absolute text-center top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
       <span className="text-3xl"> Game Over</span>
-      <br /> Score: {state.score} <br /> Time: {state.time}
+      <br />
+      Time: {state.time} <br /> Score: {state.score} <br /> High Score:{" "}
+      {player.highScore}
       <br />
       <button
         className="bg-transparent border-b border-white text-center text-2xl outline-none"
@@ -56,21 +58,6 @@ const GameOver: () => JSX.Element = () => {
 const Paused: () => JSX.Element = () => (
   <div className="text-white text-2xl z-50 font-bold">Paused</div>
 );
-
-const Time = () => {
-  const { started, paused, gameOver } = state;
-  const time = useTimer(started, paused, gameOver);
-
-  return (
-    <>
-      {/* {started && !gameOver && (
-        <div className="text-white absolute top-4 left-0 m-4">
-          {`${time}`}
-        </div>
-      )} */}
-    </>
-  );
-};
 
 const Start: () => JSX.Element = () => {
   const [name, setName] = useState<string>("");
@@ -127,4 +114,4 @@ const Start: () => JSX.Element = () => {
   );
 };
 
-export { SnakeSegment, GameOver, Paused, Start, Time };
+export { SnakeSegment, GameOver, Paused, Start };
