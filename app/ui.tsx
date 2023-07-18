@@ -109,7 +109,6 @@ const Start: () => JSX.Element = () => {
 
   return (
     <div className="text-white text-2xl z-50 font-bold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-      {player.name ? `Let's go ${player.name}` : ` Enter your name to Start`}
       {!player.name && (
         <form
           className="flex flex-col items-center justify-center"
@@ -134,8 +133,9 @@ const Start: () => JSX.Element = () => {
         >
           <input
             ref={input}
-            className="bg-transparent border-b border-white text-center text-2xl outline-none"
+            className="bg-transparent border-b border-white text-center  text-2xl outline-none"
             onChange={(e) => setName(e.target.value)}
+            placeholder=" Enter your name to start"
           />
           <button
             className="bg-transparent border-b border-white text-center text-2xl outline-none"
