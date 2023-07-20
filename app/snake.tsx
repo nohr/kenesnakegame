@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { GameOver, Paused, SnakeSegment, Start } from "./ui";
+import { GameOver, Paused, Start } from "./ui";
 import { useArrowKeys, state, player, newGame } from "./utils";
 import { useSnapshot } from "valtio";
 import Trackpad from "./trackpad";
@@ -69,14 +69,15 @@ const Snake: () => JSX.Element = () => {
 
     const checkCollision = () => {
       const head = snake[snake.length - 1];
+      console.dir(mapRef.current?.offsetTop);
 
       if (!mapRef.current) return;
 
       if (
         head.x < 0 ||
         head.x >= mapRef.current.clientWidth ||
-        head.y < 0 ||
-        head.y >= mapRef.current.clientHeight
+        head.y < mapRef.current.offsetTop ||
+        head.y >= mapRef.current.clientHeight + mapRef.current.offsetTop
       ) {
         state.gameOver = true;
       }
@@ -126,15 +127,18 @@ const Snake: () => JSX.Element = () => {
 
   return (
     <>
-      {gameOver && <GameOver />}
-      {!started && <Start />}
-      {paused && started && <Paused />}
-      <div className="h-3/4" ref={mapRef}>
-        {snake.map((segment, i) => (
-          <SnakeSegment key={i} x={segment.x} y={segment.y} />
-        ))}
+      <div className="h-3/5" ref={mapRef}>
+        {started &&
+          !gameOver &&
+          snake.map((segment, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-white"
+              style={{ left: segment.x, top: segment.y }}
+            />
+          ))}
       </div>
-      {started && <Trackpad />}
+      {started && !gameOver && <Trackpad />}
     </>
   );
 };

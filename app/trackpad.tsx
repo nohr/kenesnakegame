@@ -1,4 +1,4 @@
-import { use, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { state, useTouchControls } from "./utils";
 
 export default function Trackpad() {
@@ -16,7 +16,7 @@ export default function Trackpad() {
   return (
     <div
       ref={trackpadRef}
-      className="h-1/4 w-screen lg:hidden border-[1px] bg-zinc-800 border-zinc-400"
+      className="h-2/5 w-screen lg:hidden border-t-[1px] bg-zinc-800 border-zinc-400"
     ></div>
   );
 }

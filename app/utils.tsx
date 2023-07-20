@@ -12,7 +12,7 @@ export const player = proxy({
 
 export const state = proxy({
   player: null,
-  snake: [{ x: 0, y: 0 }],
+  snake: [{ x: 100, y: window.innerHeight / 2 }],
   score: 0,
   time: 0,
   started: false,
@@ -144,7 +144,7 @@ const useTimer = (started: boolean, paused: boolean, gameOver: boolean) => {
 
 function newGame() {
   state.gameOver = false;
-  state.snake = [{ x: 0, y: 0 }];
+  state.snake = [{ x: 100, y: window.innerHeight / 2 }];
   state.score = 0;
   state.time = 0;
   state.started = true;

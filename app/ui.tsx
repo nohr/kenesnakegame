@@ -1,11 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { newGame, player, state, useLocalStorage, useTimer } from "./utils";
 
-const SnakeSegment: ({ x, y }: { x: number; y: number }) => JSX.Element = ({
-  x,
-  y,
-}) => <div className="absolute w-2 h-2 bg-white" style={{ left: x, top: y }} />;
-
 // food
 const Food: ({ x, y }: { x: number; y: number }) => JSX.Element = ({
   x,
@@ -39,7 +34,7 @@ const GameOver: () => JSX.Element = () => {
   }, [set]);
 
   return (
-    <div className="text-white text-2xl font-bold absolute text-center top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <div className="text-current text-2xl font-bold absolute text-center top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
       <span className="text-3xl"> Game Over</span>
       <br />
       Time: {state.time} <br /> Score: {state.score} <br /> High Score:{" "}
@@ -56,7 +51,9 @@ const GameOver: () => JSX.Element = () => {
 };
 
 const Paused: () => JSX.Element = () => (
-  <div className="text-white text-2xl z-50 font-bold">Paused</div>
+  <div className="text-current text-2xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 font-bold">
+    Paused
+  </div>
 );
 
 const Start: () => JSX.Element = () => {
@@ -71,7 +68,7 @@ const Start: () => JSX.Element = () => {
   }, []);
 
   return (
-    <div className="text-white text-2xl z-50 font-bold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <div className="text-current text-2xl z-50 font-bold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
       {!player.name && (
         <form
           className="flex flex-col items-center justify-center"
@@ -114,4 +111,4 @@ const Start: () => JSX.Element = () => {
   );
 };
 
-export { SnakeSegment, GameOver, Paused, Start };
+export { GameOver, Paused, Start };
