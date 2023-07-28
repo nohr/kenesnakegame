@@ -1,8 +1,11 @@
-import { useEffect, useRef } from "react";
+import { RefObject, useEffect } from "react";
 import { state, useTouchControls } from "./utils";
 
-export default function Trackpad() {
-  const trackpadRef = useRef<HTMLDivElement>(null);
+export default function Trackpad({
+  trackpadRef,
+}: {
+  trackpadRef: RefObject<HTMLDivElement>;
+}) {
   useTouchControls(
     (direction: DirectionType) => (state.direction = direction),
     trackpadRef

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useArrowKeys, state, player, newGame } from "./utils";
 import { useSnapshot } from "valtio";
 import Trackpad from "./trackpad";
@@ -8,6 +8,7 @@ import Trackpad from "./trackpad";
 const Snake: () => JSX.Element = () => {
   const { snake, paused, started, direction, gameOver } = useSnapshot(state);
   const mapRef = useRef<HTMLDivElement>(null);
+  const trackpadRef = useRef<HTMLDivElement>(null);
   const [headerHeight, setHeaderHeight] = useState<number>(0);
 
   // get header bounds
@@ -16,6 +17,28 @@ const Snake: () => JSX.Element = () => {
     if (!header) return;
     setHeaderHeight(header.clientHeight);
   }, []);
+
+  // drop food
+  const dropFood = useCallback(() => {
+    const food = document.getElementById("food");
+    if (!food || !mapRef.current || !headerHeight) return;
+    const x = Math.floor(Math.random() * (mapRef.current.clientWidth - 10));
+    // todo - limit from header bottom to trackpad top
+    const y = Math.floor(
+      Math.random() * (mapRef.current.clientHeight - 10) + headerHeight
+    );
+    // round to nearest 10
+    food.style.left = `${Math.round(x / 10) * 10}px`;
+    food.style.top = `${Math.round(y / 10) * 10 + 2}px`;
+    console.log(food.style.left, food.style.top);
+  }, [mapRef, headerHeight]);
+
+  // start game
+  useEffect(() => {
+    if (started && !gameOver) {
+      dropFood();
+    }
+  }, [started, dropFood, gameOver]);
 
   // game logic
   useEffect(() => {
@@ -54,10 +77,10 @@ const Snake: () => JSX.Element = () => {
 
     const checkCollision = () => {
       const head = snake[snake.length - 1];
-      console.dir(mapRef.current?.offsetTop);
 
       if (!mapRef.current) return;
 
+      // * wall collision
       if (
         head.x < 0 ||
         head.x >= mapRef.current.clientWidth ||
@@ -67,37 +90,27 @@ const Snake: () => JSX.Element = () => {
         state.gameOver = true;
       }
 
-      for (let i = 0; i < state.snake.length - 1; i++) {
-        if (state.snake[i].x === head.x && state.snake[i].y === head.y) {
-          state.gameOver = true;
-        }
-      }
-    };
+      // !not working - self collision
+      // for (let i = 0; i < state.snake.length - 1; i++) {
+      //   if (state.snake[i].x === head.x && state.snake[i].y === head.y) {
+      //     console.log("collision");
 
-    // food
-    const head = snake[snake.length - 1];
-    const food = document.getElementById("food");
+      //     //   state.gameOver = true;
+      //   }
+      // }
 
-    if (food) {
-      const foodX = parseInt(food.style.left);
-      const foodY = parseInt(food.style.top);
-
-      if (head.x === foodX && head.y === foodY) {
-        state.score += 1;
-        state.snake.unshift({ x: foodX, y: foodY });
-        food.style.left = `${Math.floor(Math.random() * 100) * 10}px`;
-        food.style.top = `${Math.floor(Math.random() * 100) * 10}px`;
-      }
-    }
-
-    // drop food
-    const dropFood = () => {
+      // * food collision
       const food = document.getElementById("food");
-      console.log(food);
 
       if (food) {
-        food.style.left = `${Math.floor(Math.random() * 100) * 10}px`;
-        food.style.top = `${Math.floor(Math.random() * 100) * 10}px`;
+        const foodX = parseInt(food.style.left);
+        const foodY = parseInt(food.style.top);
+
+        if (head.x === foodX && head.y === foodY) {
+          state.score += 1;
+          state.snake.unshift({ x: foodX, y: foodY });
+          dropFood();
+        }
       }
     };
 
@@ -107,7 +120,7 @@ const Snake: () => JSX.Element = () => {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [snake, direction, paused, started, gameOver, headerHeight]);
+  }, [snake, direction, paused, started, gameOver, headerHeight, dropFood]);
 
   // const { get, set } = useLocalStorage();
 
@@ -146,8 +159,11 @@ const Snake: () => JSX.Element = () => {
               style={{ left: segment.x, top: segment.y }}
             />
           ))}
+        {started && !gameOver && (
+          <div id="food" className="absolute w-2 h-2 bg-red-500" />
+        )}
       </div>
-      {started && !gameOver && <Trackpad />}
+      {started && !gameOver && <Trackpad trackpadRef={trackpadRef} />}
     </>
   );
 };
