@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { GameOver, Paused, Start } from "./ui";
+import React, { useEffect, useRef, useState } from "react";
 import { useArrowKeys, state, player, newGame } from "./utils";
 import { useSnapshot } from "valtio";
 import Trackpad from "./trackpad";
@@ -9,30 +8,16 @@ import Trackpad from "./trackpad";
 const Snake: () => JSX.Element = () => {
   const { snake, paused, started, direction, gameOver } = useSnapshot(state);
   const mapRef = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState<number>(0);
 
-  useArrowKeys((key: string) => {
-    if (key === " " && gameOver) {
-      newGame();
-    } else if ((key === " " || key === "Escape") && started && !gameOver) {
-      state.paused = !paused;
-    } else if (!paused && started) {
-      switch (key) {
-        case "ArrowUp":
-          state.direction = "up";
-          break;
-        case "ArrowDown":
-          state.direction = "down";
-          break;
-        case "ArrowLeft":
-          state.direction = "left";
-          break;
-        case "ArrowRight":
-          state.direction = "right";
-          break;
-      }
-    }
-  });
+  // get header bounds
+  useEffect(() => {
+    const header = document.querySelector("header");
+    if (!header) return;
+    setHeaderHeight(header.clientHeight);
+  }, []);
 
+  // game logic
   useEffect(() => {
     if (
       paused ||
@@ -76,7 +61,7 @@ const Snake: () => JSX.Element = () => {
       if (
         head.x < 0 ||
         head.x >= mapRef.current.clientWidth ||
-        head.y < mapRef.current.offsetTop ||
+        head.y < headerHeight ||
         head.y >= mapRef.current.clientHeight + mapRef.current.offsetTop
       ) {
         state.gameOver = true;
@@ -108,6 +93,7 @@ const Snake: () => JSX.Element = () => {
     // drop food
     const dropFood = () => {
       const food = document.getElementById("food");
+      console.log(food);
 
       if (food) {
         food.style.left = `${Math.floor(Math.random() * 100) * 10}px`;
@@ -121,9 +107,32 @@ const Snake: () => JSX.Element = () => {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [snake, direction, paused, started, gameOver]);
+  }, [snake, direction, paused, started, gameOver, headerHeight]);
 
   // const { get, set } = useLocalStorage();
+
+  useArrowKeys((key: string) => {
+    if (key === " " && gameOver) {
+      newGame();
+    } else if ((key === " " || key === "Escape") && started && !gameOver) {
+      state.paused = !paused;
+    } else if (!paused && started) {
+      switch (key) {
+        case "ArrowUp":
+          state.direction = "up";
+          break;
+        case "ArrowDown":
+          state.direction = "down";
+          break;
+        case "ArrowLeft":
+          state.direction = "left";
+          break;
+        case "ArrowRight":
+          state.direction = "right";
+          break;
+      }
+    }
+  });
 
   return (
     <>

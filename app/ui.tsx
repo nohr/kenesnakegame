@@ -35,10 +35,14 @@ const GameOver: () => JSX.Element = () => {
 
   return (
     <div className="text-current text-2xl font-bold absolute text-center top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <span className="text-5xl">{player.name}</span>
+      <br />
+      <br />
       <span className="text-3xl"> Game Over</span>
       <br />
-      Time: {state.time} <br /> Score: {state.score} <br /> High Score:{" "}
-      {player.highScore}
+      {/* Time: {state.time} <br /> */}
+      Score: {state.score} <br />
+      High Score: {player.highScore}
       <br />
       <button
         className="bg-transparent border-b border-white text-center text-2xl outline-none"
@@ -99,8 +103,10 @@ const Start: () => JSX.Element = () => {
             onChange={(e) => setName(e.target.value)}
             placeholder=" Enter your name"
           />
+          <br />
           <button
-            className="bg-transparent text-center text-2xl outline-none"
+            disabled={name.length === 0}
+            className="bg-transparent text-center text-5xl outline-none disabled:opacity-25"
             type="submit"
           >
             Start

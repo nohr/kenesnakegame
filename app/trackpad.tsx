@@ -16,7 +16,7 @@ export default function Trackpad() {
   return (
     <div
       ref={trackpadRef}
-      className="h-2/5 w-screen lg:hidden border-t-[1px] bg-zinc-800 border-zinc-400"
+      className="h-2/5 w-screen lg:hidden border-t-[1px] bg-zinc-800 border-zinc-400 z-50"
     ></div>
   );
 }
