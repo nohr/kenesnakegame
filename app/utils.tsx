@@ -12,7 +12,7 @@ export const player = proxy({
 
 export const state = proxy({
   player: null,
-  snake: [{ x: 100, y: window.innerHeight / 2 }],
+  snake: [{ x: 100, y: 60 }],
   score: 0,
   time: 0,
   started: false,
